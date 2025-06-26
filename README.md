@@ -1,213 +1,124 @@
 # Andy API Local Client
 
-This directory contains all the components needed to run the local-side of the Andy API, allowing you to join the compute pool and contribute your hardware resources.
+This directory contains the necessary components to run the local side of the Andy API, allowing you to connect your local Ollama instance to the distributed compute pool and contribute your hardware resources.
 
-## 🚀 Quick Start
+## 🚀 Features
 
-### Option 1: Web Interface (Recommended)
-```bash
-./start.sh web
-```
-Access the web interface at: http://localhost:5000
+*   **Two Operation Modes**:
+    *   **Web Interface (Recommended)**: A full-featured, user-friendly Flask application for easy management.
+    *   **CLI Client**: A lightweight, terminal-based client for simple, headless operation.
+*   **Automatic Model Discovery**: Automatically detects all models available in your local Ollama instance.
+*   **Easy Configuration**:
+    *   The web UI provides a settings page to configure connection URLs, client behavior, and more.
+    *   The CLI client is configured via command-line arguments.
+*   **Pool Integration**:
+    *   Registers your machine as a compute host in the Andy API pool.
+    *   Sends regular health pings to maintain an active connection.
+    *   Polls the server for available work (inference jobs) and processes them using Ollama.
+*   **Simple Dashboard**: The web UI provides a dashboard to view connection status, enabled models, and basic request statistics.
 
-### Option 2: Enhanced CLI Client
-```bash
-./start.sh enhanced
-```
-Advanced command-line client with VRAM monitoring and enhanced system tracking.
+## 📁 File Overview
 
-### Option 3: Simple CLI Client
-```bash
-./start.sh cli
-```
-Basic command-line client for simple pool joining.
-
-## 📁 Files Overview
-
-### Core Applications
-- **`app.py`** - Flask web application providing a user-friendly interface
-- **`enhanced_andy_client.py`** - Advanced CLI client with comprehensive system monitoring
-- **`andy_host_client.py`** - Basic CLI client for simple pool joining
-- **`launch.py`** - Unified launcher script for all client modes
-
-### Configuration & Setup
-- **`requirements.txt`** - Python dependencies
-- **`start.sh`** - Main startup script with mode selection
-- **`templates/`** - Web interface templates
-
-### Templates (Web Interface)
-- **`local_dashboard.html`** - Main dashboard view
-- **`local_metrics.html`** - Performance metrics and monitoring
-- **`local_models.html`** - Model management interface
-- **`local_settings.html`** - Configuration settings
+*   **`launch.py`**: The main launcher script to start the client in either web or CLI mode.
+*   **`app.py`**: The Flask web application that provides the user-friendly interface (web mode).
+*   **`andy_host_client.py`**: A basic, command-line-only client for joining the pool (CLI mode).
+*   **`requirements.txt`**: A list of all necessary Python dependencies.
+*   **`client_config.json`**: The default configuration file for the web interface.
+*   **`templates/`**: Contains the HTML templates for the web interface (`index.html`, `models.html`, `metrics.html`, `settings.html`).
 
 ## 🛠️ Installation
 
 ### Prerequisites
-- Python 3.8+
-- Ollama (for model hosting)
-- NVIDIA GPU (optional, for VRAM monitoring)
+
+*   Python 3.8+
+*   [Ollama](https://ollama.com/) installed and running on your machine.
 
 ### Setup
-1. **Install Dependencies**:
-   ```bash
-   pip3 install -r requirements.txt
-   ```
 
-2. **Install Ollama** (if not already installed):
-   - Visit: https://ollama.ai
-   - Download and install for your platform
-   - Pull some models: `ollama pull llama2`
+1.  **Install Dependencies**:
+    Open your terminal in this directory and run:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-3. **Start the Client**:
-   ```bash
-   ./start.sh web  # For web interface
-   # or
-   ./start.sh enhanced  # For enhanced CLI
-   ```
+2.  **Verify Ollama is Running**:
+    Make sure the Ollama service is active. You can pull a model to get started:
+    ```bash
+    ollama pull llama3:8b
+    ```
 
-## 🎮 Usage Modes
+## 🎮 How to Run
 
-### Web Interface Mode
-- **Port**: 5000 (default)
-- **Features**: 
-  - Visual dashboard
-  - Model management
-  - Performance monitoring
-  - Easy configuration
-- **Best For**: Most users, beginners, visual interface preference
+You can run the client in two different modes using `launch.py`.
 
-### Enhanced CLI Mode
-- **Features**:
-  - VRAM tracking
-  - Advanced system monitoring
-  - Real-time performance metrics
-  - Automatic model discovery
-- **Best For**: Advanced users, servers, automated deployments
+### Option 1: Web Interface (Recommended)
 
-### Simple CLI Mode
-- **Features**:
-  - Basic pool joining
-  - Simple configuration
-  - Lightweight operation
-- **Best For**: Minimal setups, testing, basic usage
+This mode provides a full web UI to manage your client.
+
+1.  **Start the client**:
+    ```bash
+    python3 launch.py --mode web
+    ```
+
+2.  **Access the UI**:
+    Open your web browser and navigate to **http://localhost:5000**.
+
+    From the web interface, you can:
+    *   Go to the **Models** page to enable the models you want to share.
+    *   Go to the **Dashboard** and click "Connect to Pool" to join the network.
+    *   Adjust connection settings on the **Settings** page.
+
+### Option 2: Command-Line Client (CLI)
+
+This mode is for users who prefer a lightweight, terminal-only experience.
+
+**Note**: The `launch.py` script for `cli` mode is missing a required argument. Please run the `andy_host_client.py` script directly as shown below.
+
+1.  **Start the client**:
+    You must provide a unique `--name` for your host.
+    ```bash
+    python3 andy_host_client.py --name "my-powerful-pc" --andy-url https://mindcraft.riqvip.dev --url http://localhost:11434
+    ```
+
+2.  The client will automatically join the pool and begin sending health pings. To stop it, press `Ctrl+C`.
 
 ## ⚙️ Configuration
 
-### Environment Variables
+### Web Interface
+
+The web client can be configured in multiple ways (in order of priority):
+
+1.  **Environment Variables**:
+    ```bash
+    export ANDY_API_URL="https://mindcraft.riqvip.dev"
+    export OLLAMA_URL="http://localhost:11434"
+    export FLASK_PORT="5001" # Optional: change the web UI port
+    python3 launch.py --mode web
+    ```
+2.  **Web UI Settings Page**: Changes made in the `/settings` page are saved and will persist.
+3.  **`client_config.json` file**: The application loads its default settings from this file on first startup.
+
+### CLI Client
+
+The CLI client is configured exclusively through command-line arguments. Run the following command to see all available options:
 ```bash
-export ANDY_API_URL="https://mindcraft.riqvip.dev"      # Andy API server
-export OLLAMA_URL="http://localhost:11434"       # Local Ollama instance
-export FLASK_PORT="5000"                         # Web interface port
+python3 andy_host_client.py --help
 ```
-
-### Command Line Options
-```bash
-# Web mode
-python3 launch.py --mode web --port 5000
-
-# Enhanced CLI mode  
-python3 launch.py --mode enhanced --server https://mindcraft.riqvip.dev --ollama http://localhost:11434
-
-# Simple CLI mode
-python3 launch.py --mode cli --server https://mindcraft.riqvip.dev --ollama http://localhost:11434
-```
-
-## 📊 Features
-
-### System Monitoring
-- **CPU Usage**: Real-time CPU utilization tracking
-- **RAM Usage**: Memory consumption monitoring
-- **VRAM Tracking**: GPU memory usage (NVIDIA GPUs)
-- **Model Performance**: Request/response metrics
-
-### Model Management
-- **Auto-Discovery**: Automatically detect Ollama models
-- **Model Classification**: Categorize by type (text, vision, etc.)
-- **Performance Testing**: Built-in model testing
-- **Resource Tracking**: Per-model resource usage
-
-### Pool Integration
-- **Automatic Registration**: Join Andy API compute pool
-- **Health Monitoring**: Regular health pings
-- **Load Balancing**: Intelligent request distribution
-- **Fallback Handling**: Graceful error recovery
 
 ## 🔧 Troubleshooting
 
-### Common Issues
+*   **Connection Refused to Ollama**:
+    Ensure the Ollama application or `ollama serve` command is running. You can test it with `curl http://localhost:11434`.
 
-1. **Ollama Not Found**:
-   ```bash
-   # Check if Ollama is running
-   curl http://localhost:11434/api/tags
-   
-   # Start Ollama if needed
-   ollama serve
-   ```
+*   **"Port Already in Use" (Web Mode)**:
+    Another application is using port 5000. You can specify a different one:
+    ```bash
+    python3 launch.py --mode web --port 5001
+    ```
 
-2. **Port Already in Use**:
-   ```bash
-   # Use different port
-   python3 launch.py --mode web --port 5001
-   ```
+*   **No Models Found**:
+    Make sure you have pulled at least one model using the Ollama CLI (e.g., `ollama pull qwen:4b`). In the web UI, you can go to the **Models** page and click "Refresh Models".
 
-3. **VRAM Monitoring Issues**:
-   ```bash
-   # Install GPU monitoring libraries
-   pip3 install pynvml GPUtil
-   ```
-
-4. **Connection Issues**:
-   - Check firewall settings
-   - Verify Andy API server is running
-   - Ensure network connectivity
-
-### Logs & Debugging
-- Web interface logs: Check console output
-- CLI client logs: Displayed in terminal
-- Error details: Check Python traceback
-
-## 🔗 Integration
-
-### With Andy API Server
-The local client connects to the main Andy API server (default: https://mindcraft.riqvip.dev) to:
-- Register as a compute host
-- Receive inference requests
-- Report performance metrics
-- Participate in load balancing
-
-### With Ollama
-The client interfaces with your local Ollama instance to:
-- Discover available models
-- Serve inference requests
-- Monitor model performance
-- Manage model resources
-
-## 📈 Performance Optimization
-
-### Hardware Recommendations
-- **CPU**: Multi-core processor for concurrent requests
-- **RAM**: 16GB+ for larger models
-- **GPU**: NVIDIA GPU with 8GB+ VRAM (optional but recommended)
-- **Storage**: SSD for model loading performance
-- **Network**: Stable internet connection with good bandwidth
-
-### Configuration Tips
-- Adjust `max_clients` based on your hardware
-- Monitor VRAM usage to avoid OOM errors
-- Use appropriate model quantization
-- Configure reasonable context lengths
-
-## 🤝 Contributing
-
-This local client is part of the larger Mindcraft-CE Andy API ecosystem. To contribute:
-
-1. Fork the main repository
-2. Make your changes in the `local_client/` directory
-3. Test thoroughly with different modes
-4. Submit a pull request
-
-## 📄 License
-
-Part of the Mindcraft-CE project - see main repository for license details.
+*   **Connection Issues to Andy API**:
+    *   Check your internet connection and any firewall settings.
+    *   Verify the Andy API server URL is correct. The default is `https://mindcraft.riqvip.dev`.
