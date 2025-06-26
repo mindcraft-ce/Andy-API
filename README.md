@@ -117,7 +117,7 @@ python3 andy_host_client.py --help
     ```
 
 *   **No Models Found**:
-    Make sure you have pulled at least one model using the Ollama CLI (e.g., `ollama pull qwen:4b`). In the web UI, you can go to the **Models** page and click "Refresh Models".
+    Make sure you have pulled at least one model using the Ollama CLI (e.g., `ollama pull qwen3:4b`). In the web UI, you can go to the **Models** page and click "Refresh Models".
 
 *   **Connection Issues to Andy API**:
     *   Check your internet connection and any firewall settings.
