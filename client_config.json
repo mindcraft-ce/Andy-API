@@ -1,5 +1,5 @@
 {
-  "andy_api_url": "https://mindcraft.riqvip.dev",
+  "andy_api_url": "https://mindcraft-ce.com",
   "ollama_url": "http://localhost:11434",
   "auto_connect": false,
   "max_vram_gb": 12.0,
