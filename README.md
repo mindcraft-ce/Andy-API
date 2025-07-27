@@ -44,7 +44,7 @@ This directory contains the necessary components to run the local side of the An
 2.  **Verify Ollama is Running**:
     Make sure the Ollama service is active. You can pull a model to get started:
     ```bash
-    ollama pull llama3:8b
+    ollama pull sweaterdog/andy-4:micro-q8_0
     ```
 
 ## 🎮 How to Run
@@ -57,7 +57,7 @@ This mode provides a full web UI to manage your client.
 
 1.  **Start the client**:
     ```bash
-    python3 launch.py --mode web
+    python3 launch.py
     ```
 
 2.  **Access the UI**:
@@ -90,7 +90,7 @@ The web client can be configured in multiple ways (in order of priority):
 
 1.  **Environment Variables**:
     ```bash
-    export ANDY_API_URL="https://mindcraft.riqvip.dev"
+    export ANDY_API_URL="https://mindcraft-ce.com"
     export OLLAMA_URL="http://localhost:11434"
     export FLASK_PORT="5001" # Optional: change the web UI port
     python3 launch.py --mode web
@@ -121,4 +121,4 @@ python3 andy_host_client.py --help
 
 *   **Connection Issues to Andy API**:
     *   Check your internet connection and any firewall settings.
-    *   Verify the Andy API server URL is correct. The default is `https://mindcraft.riqvip.dev`.
+    *   Verify the Andy API server URL is correct. The default is `https://mindcraft-ce.com`.
