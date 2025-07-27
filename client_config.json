@@ -3,7 +3,7 @@
   "ollama_url": "http://localhost:11434",
   "auto_connect": false,
   "max_vram_gb": 12.0,
-  "report_interval": 30,
+  "report_interval": 10,
   "client_name": "DEFAULT_CLIENT_NAME_PLEASE_CHANGE",
   "api_key": ""
 }
